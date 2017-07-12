@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Insert Elements on Url</title>
+
+</head>
+<body>
+
+<div id="targetEl"
+	 data-banner1="urlString1, http://google.com/, https://dummyimage.com/640x120/000/fff&text=Google"
+	 data-banner2="urlString2, http://yahoo.com/, https://dummyimage.com/640x120/000/fff&text=Yahoo"
+>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script>
+
+;(function($){
+	var DetectTargetGenre = function($target){
+		this.$el = undefined;
+		this.init();
+	};
+	DetectTargetGenre.prototype = {
+		init: function(){
+			this.$el = $('#targetEl');
+
+			// Get how many genres are set
+			this.genreSize = 0;
+			this.targetGenreData = this.$el.map(function(){
+				return $(this).data()
+			});
+			for(var key in this.targetGenreData[0]){
+				this.genreSize++;
+			}
+			var genreObj = this.targetGenreData[0];
+
+			// Convert String to Array in Object
+			for(key in genreObj) {
+			    if(genreObj.hasOwnProperty(key)) {
+			        var value = genreObj[key];
+			        var valueArray = value.split(',');
+			        genreObj[key] = valueArray;
+			    }
+			}
+
+			// Check url to show/hide Genre Banner
+			for(var i = 1; i <= this.genreSize; i++){
+				var genreId = genreObj['banner' + i][0];
+				var genreLink = genreObj['banner' + i][1];
+				var genreImg = genreObj['banner' + i][2];
+				var pageUrl = window.location.href;
+				var isGenreIdExists = pageUrl.indexOf(genreId);
+				if(isGenreIdExists > 0){
+					$('#targetEl').after('<div><a href="'+ genreLink +'"><img src="'+ genreImg+'" alt="" /></a></div>')
+				}
+			}
+		}
+	}
+	var detectTargetGenre = new DetectTargetGenre();
+})(jQuery);
+</script>
+
+</body>
+</html>
